@@ -1,0 +1,39 @@
+.handleContainer {
+  .headerwrapper {
+    height: 45px;
+    background-color: #f4f4f4;
+    line-height: 45px;
+    padding-left: 10px;
+
+    span {
+      display: inline-block;
+      position: relative;
+      padding-left: 12px;
+      font-size: 18px;
+    }
+
+    span::after {
+      content: '';
+      display: block;
+      position: absolute;
+      width: 3px;
+      height: 20px;
+      background-color: #446dff;
+      top: 12px;
+      left: 0;
+    }
+  }
+
+  .textDesc {
+    padding: 10px;
+    text-indent: 2rem;
+    min-height: 50px;
+  }
+
+  .formWrapper {
+    padding: 0 15px;
+    height: calc(100% - 90px);
+    overflow: auto;
+  }
+
+}

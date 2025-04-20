@@ -1,0 +1,71 @@
+.workBenchForm {
+  font-size: 14px;
+  background-color: #fff;
+
+  :global {
+    .adm-list-item-content-extra {
+      padding-left: 0;
+    }
+
+    .adm-list {
+      margin: 0 6px;
+    }
+
+    .adm-list-item-content {
+      align-items: center;
+    }
+
+    .adm-form-item-label,
+    .adm-form-item.adm-form-item-vertical .adm-form-item-label {
+      font-size: 15px;
+      // color: #333;
+    }
+
+    .adm-form-item-child-inner {
+      // color: #cccccc !important;
+      font-size: 15px !important;
+      text-align: right;
+
+      :global {
+        .adm-input,
+        .adm-text-area {
+          // --color: #cccccc !important;
+          --font-size: 15px !important;
+        }
+      }
+    }
+
+    .adm-input-element::placeholder {
+      // color: #333 !important;
+      font-size: 15px !important;
+    }
+
+    .adm-form-item adm-form-item-horizontal .adm-form-item-child-inner {
+      flex: inherit;
+      margin-left: auto;
+    }
+
+    .adm-form-item adm-form-item-horizontal .adm-list-item-description {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .adm-form-item-feedback-error {
+      text-align: right;
+    }
+
+    .adm-list-item-disabled.adm-list-item-disabled
+      > .adm-list-item-content
+      > * {
+      opacity: 0.8;
+    }
+  }
+}
+
+.formItemGroup {
+  :global {
+    .adm-list-item-content {
+      border: none;
+    }
+  }
+}

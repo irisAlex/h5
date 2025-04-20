@@ -1,0 +1,125 @@
+.mediatorWrapper {
+    .contentWrapper {
+        .searchBarWrapper {
+            padding: 5px 10px 10px 10px;
+        }
+
+        .listWrapper {
+            .listItem {
+                min-height: 270px;
+                border-radius: 8px;
+                background-color: white;
+                padding: 12px;
+                margin-bottom: 12px;
+                .header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    border-bottom: 1px dashed #ebebeb;
+                    height: 50px;
+                    img{
+                        height: 40px;
+                    }
+                    .undo {
+                        width: 90px;
+                        height: 30px;
+                        border-radius: 0 18px;
+                        background: linear-gradient(90deg, #3136eb 0%, #4d65ff 100%);
+                        position: absolute;
+                        right: 24px;
+                        font-weight: 700;
+                        font-size: 18px;
+                        line-height: 31px;
+                        text-align: center;
+                        color: #fff;
+                    }
+                }
+                .content {
+                    border-bottom: 1px dashed #ebebeb;
+                    padding:20px 15px 15px 15px;
+                }
+                .btnWrapper{
+                    display: flex;
+                    justify-content: end;
+                    margin-top: 10px;
+                }
+            }
+        }
+    }
+
+    :global {
+        .adm-tabs-content {
+            background-color: #f7f7f7;
+            height: calc(100vh - 120px);
+        }
+    }
+}
+.detailContent{
+    .headerwrapper {
+        height: 45px;
+        background-color: #f4f4f4;
+        line-height: 45px;
+        padding: 0px 10px;
+        display: flex;
+        justify-content: space-between;
+        margin-top: 8px;
+        span {
+            display: inline-block;
+            position: relative;
+            padding-left: 12px;
+            font-size: 18px;
+        }
+
+        .leftTitle::after {
+            content: '';
+            display: block;
+            position: absolute;
+            width: 3px;
+            height: 20px;
+            background-color: #446dff;
+            top: 12px;
+            left: 0;
+        }
+        .showBtn{
+            color:#446dff
+        }
+    }
+    .tableWrapper{
+        padding:5px;
+        .tableHeader{
+            .tableHeaderItem{
+                display: inline-block;
+                width: 24.5%;
+                background: rgba(68, 109, 255, 0.7);
+                color:white;
+                margin-right: 0.5%;
+                height: 30px;
+                line-height: 30px;
+                text-align: center;
+            }
+        }
+        .tableTr{
+            .tableTd{
+                display: inline-block;
+                width: 24.5%;
+                background: rgba(68, 109, 255, 0.06);
+                margin-right: 0.5%;
+                text-align: center;
+                height: 35px;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                line-height: 35px;
+            }
+        }
+    }
+    .subHeader{
+        height: 45px;
+        margin:0px;
+        padding-left: 20px;
+        color:#446dff;
+        line-height: 45px;
+        font-size: 18px;
+    }
+   
+}

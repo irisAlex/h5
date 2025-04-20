@@ -1,0 +1,81 @@
+.registrarWrapper {
+    overflow: hidden;
+    .content {
+        position: relative;
+        width: 100%;
+        margin: 0 auto;
+        height: calc(100vh - 45px);
+        // background-color: #f6f7fb;
+        background-color: white;
+        padding-bottom: 80px;
+        overflow: hidden;
+
+        .headerwrapper {
+            height: 45px;
+            background-color: #f4f4f4;
+            line-height: 45px;
+            padding-left: 10px;
+
+            span {
+                display: inline-block;
+                position: relative;
+                padding-left: 12px;
+                font-size: 18px;
+            }
+
+            span::after {
+                content: '';
+                display: block;
+                position: absolute;
+                width: 3px;
+                height: 20px;
+                background-color: #446dff;
+                top: 12px;
+                left: 0;
+            }
+        }
+        .formWrapper {
+            padding:0px 15px;
+            height: calc(100% - 90px);
+            overflow: auto;
+        }
+        .addParty {
+            display: flex;
+            justify-content: space-between;
+            margin: 0px 15px;
+            height: 45px;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+            padding:0px 5px;
+            color:#446dff;
+        }
+        .personLine {
+            display: flex;
+            justify-content: space-between;
+            margin: 0px 15px;
+            height: 45px;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+            padding:0px 10px;
+        }
+
+        .submitBtn {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            height: 60px;
+            line-height: 60px;
+            font-size: 22px;
+            letter-spacing: 5px;
+            background-color: #446dff;
+            color: white;
+            text-align: center;
+        }
+    }
+    :global{
+        .adm-list-item{
+            border-bottom: 1px solid #eee;
+        }
+    }
+}
