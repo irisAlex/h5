@@ -6,6 +6,7 @@
  @Description: 
  */
 import {
+  Cascader,
   DatePicker,
   Form,
   Input,
@@ -13,13 +14,12 @@ import {
   Stepper,
   TextArea,
   Toast,
-  Cascader
 } from 'antd-mobile';
 import dayjs from 'dayjs';
+import { useEffect, useMemo, useState } from 'react';
 import Upload from '../Upload';
 import PickerCheckList from '../WorkBenchForm/PickerCheckList';
 import styles from './index.less';
-import { useState, useEffect, useRef,useMemo } from 'react';
 export const SelectDom = (props) => {
   const { name, label, columns, rules, disabled, readOnly } = props;
   return (
@@ -55,50 +55,49 @@ export const SelectDom = (props) => {
 };
 export const CascaderDom = (props) => {
   const { name, label, columns, rules, disabled, readOnly } = props;
-  const [valueToOptions, setValueToOptions] = useState({})
-     
+  const [valueToOptions, setValueToOptions] = useState({});
+
   const options = useMemo(() => {
-    function generate(v){
-      const options = valueToOptions[v]
+    function generate(v) {
+      const options = valueToOptions[v];
       if (options === null) {
-        return undefined
+        return undefined;
       }
       if (options === undefined) {
-        return Cascader.optionSkeleton
+        return Cascader.optionSkeleton;
       }
-      return options.map(option => ({
+      return options.map((option) => ({
         ...option,
         children: generate(option.value),
-      }))
+      }));
     }
-    return generate('') ?? []
-  }, [valueToOptions])
-
+    return generate('') ?? [];
+  }, [valueToOptions]);
 
   useEffect(() => {
-    fetchOptionsForValue('', 0)
-  }, [])
+    fetchOptionsForValue('', 0);
+  }, []);
   async function fetchOptionsForValue(v, level) {
-    if (v in valueToOptions) return
+    if (v in valueToOptions) return;
     if (level >= 3) {
-      setValueToOptions(prev => ({
+      setValueToOptions((prev) => ({
         ...prev,
         [v]: null,
-      }))
-      return
+      }));
+      return;
     }
-    const data = await mockDataFetch(v)
+    const data = await mockDataFetch(v);
     const options =
       data === null
         ? null
-        : data.map(entry => ({
+        : data.map((entry) => ({
             value: entry,
             label: entry,
-          }))
-    setValueToOptions(prev => ({
+          }));
+    setValueToOptions((prev) => ({
       ...prev,
       [v]: options,
-    }))
+    }));
   }
   return (
     <Form.Item
@@ -113,18 +112,19 @@ export const CascaderDom = (props) => {
       rules={rules}
       disabled={disabled}
     >
-      <Cascader 
-         onSelect={value => {
+      <Cascader
+        onSelect={(value) => {
           value.forEach((v, index) => {
-            fetchOptionsForValue(v, index + 1)
-          })
+            fetchOptionsForValue(v, index + 1);
+          });
         }}
-      options={options}>
-        {items => {
-          if (items.every(item => item === null)) {
-            return '未选择'
+        options={options}
+      >
+        {(items) => {
+          if (items.every((item) => item === null)) {
+            return '未选择';
           } else {
-            return items.map(item => item?.label ?? '未选择').join('-')
+            return items.map((item) => item?.label ?? '未选择').join('-');
           }
         }}
       </Cascader>
@@ -176,7 +176,7 @@ export const InputNumber = (props) => {
   );
 };
 export const DateDom = (props) => {
-  const { name, label, rules, readOnly } = props;
+  const { name, label, rules, readOnly = true } = props;
   return (
     <Form.Item
       name={name}
@@ -278,7 +278,7 @@ export const SubGroupHeader = (props) => {
   );
 };
 export const JustRead = (props) => {
-    const { name, label, } = props;
+  const { name, label } = props;
   return (
     <Form.Item name={name} label={label}>
       <Input

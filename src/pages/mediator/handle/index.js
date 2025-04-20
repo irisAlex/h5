@@ -1,20 +1,25 @@
 import { Button, Form, Mask, NavBar, SpinLoading, Steps } from 'antd-mobile';
 import { useForm } from 'antd/es/form/Form';
+import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 import { history, useSearchParams } from 'umi';
 import { selectBasicInfo } from '../../../services/index';
-import { findDom, handleApplicantInfoFormList,handleRespondentInfoFormList } from '../../../utils/findDom';
-import { getFormListNew } from '../../Home/formData';
-import styles from './index.less';
-const { Step } = Steps;
 import {
-  agentInfo,
+  findDom,
+  handleApplicantInfoFormList,
+  handleRespondentInfoFormList,
+  mediationRecordsInfoFormList,
+} from '../../../utils/findDom';
+import {
   applicantInfo,
-  baseInfo,
-  evidenceMaterials,
+  getFormListNew,
   mediationRecords,
   respondentInfo,
 } from '../../Home/formData';
+import styles from './index.less';
+
+import { insertMediateRecord, updateById } from '../../../services/index';
+const { Step } = Steps;
 export default function index() {
   const [loading, setLoading] = useState(false);
   const [formDataList, setFormDataList] = useState([]);
@@ -30,6 +35,31 @@ export default function index() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [applicantInfoForm] = useForm();
   const [respondentInfoForm] = useForm();
+  const [mediationRecordsInfoForm] = useForm();
+  const formValuesChange = (changedValues, allValues) => {
+    console.log('changedValues', changedValues);
+    if (changedValues.applicantType?.length > 0) {
+      let arr = handleApplicantInfoFormList(
+        applicantInfo,
+        changedValues.applicantType[0],
+        ['邮箱'],
+      );
+      setApplicantInfoFormList(arr);
+    }
+  };
+
+  const formRespondentValuesChange = (changedValues, allValues) => {
+    console.log('changedValues', changedValues);
+    if (changedValues.applicantType?.length > 0) {
+      let list = handleRespondentInfoFormList(
+        respondentInfo,
+        changedValues.applicantType[0],
+        ['邮箱'],
+      );
+      setRespondentInfoFormList(list);
+    }
+  };
+
   useEffect(() => {
     let res = getFormListNew();
     setApplicantInfoFormList(res.applicantInfo);
@@ -42,17 +72,17 @@ export default function index() {
     setLoading(true);
     selectBasicInfo({ eventId: searchParams.get('eventId') }).then((res) => {
       if (res.code == '1') {
-
         const applicantInfo1 = res.data.applicantList[0]; //获取申请人信息
         const respondentInfo1 = res.data.applicantList[1]; //获取被申请人信息
         let arr = handleApplicantInfoFormList(
           applicantInfo,
           applicantInfo1.applType,
-          ["邮箱"]
+          ['邮箱'],
         );
         setApplicantInfoFormList(arr);
 
-        applicantInfoForm.setFieldsValue({ //申请人信息回显
+        applicantInfoForm.setFieldsValue({
+          //申请人信息回显
           ...applicantInfo1,
           applicantType: [applicantInfo1.applType],
           applicantName: applicantInfo1.name,
@@ -62,22 +92,29 @@ export default function index() {
           applicantIdCard: applicantInfo1.idCard,
         });
 
-
         let list = handleRespondentInfoFormList(
           respondentInfo,
           respondentInfo1.applType,
-          ["邮箱"]
+          ['邮箱'],
         );
         setRespondentInfoFormList(list);
 
-        respondentInfoForm.setFieldsValue({ //被申请人信息回显
+        respondentInfoForm.setFieldsValue({
+          //被申请人信息回显
           ...respondentInfo1,
-          applicantType:  [respondentInfo1.applType],
+          applicantType: [respondentInfo1.applType],
           applicantName: respondentInfo1.name,
           applicantSex: [respondentInfo1.sex],
           personLiveAddress: respondentInfo1.address,
           applicantPhone: respondentInfo1.tel,
-          applicantIdCard:respondentInfo1.idCard,
+          applicantIdCard: respondentInfo1.idCard,
+        });
+
+        let arr1 = mediationRecordsInfoFormList(mediationRecords);
+        setMediationRecordsFormList(arr1);
+        mediationRecordsInfoForm.setFieldsValue({
+          mediatorName: res.data.mediatorName,
+          // mediatePersonTel : res.data.
         });
       }
       setLoading(false);
@@ -89,21 +126,44 @@ export default function index() {
   const baseInfoSubmit = () => {
     applicantInfoForm.validateFields().then((applicantInfoValues) => {
       respondentInfoForm.validateFields().then((respondentInfoValues) => {
-        console.log('applicantInfoValues', applicantInfoValues)
-        console.log('respondentInfoValues', respondentInfoValues)
-           //当事人信息提交
-    setStepCurrent(1);
+        ObjectTraversal(applicantInfoValues, '01');
+        ObjectTraversal(respondentInfoValues, '02');
+        const nfv = {
+          applicantList: [applicantInfoValues, respondentInfoValues],
+          eventId: searchParams.get('eventId'),
+        };
+        updateById(nfv);
+        //当事人信息提交
+        setStepCurrent(1);
       });
     });
- 
   };
+
   const mediationRecordsSubmit = () => {
+    mediationRecordsInfoForm.validateFields().then((mrif) => {
+      mrif.eventId = searchParams.get('eventId');
+      mrif.mediateSuccess = mrif.mediateSuccess[0];
+      mrif.startTime = dayjs(mrif.startTime).format('YYYY-MM-DD HH:mm:ss');
+      mrif.endTime = dayjs(mrif.endTime).format('YYYY-MM-DD HH:mm:ss');
+      mrif.mediateAddress = '';
+      console.log(JSON.stringify(mrif.startTime), 3444);
+      insertMediateRecord(mrif);
+    });
     //调处记录提交
     setStepCurrent(2);
   };
   const evidenceMaterialsSubmit = () => {
     //证据材料提交
     // setStepCurrent(2);
+  };
+
+  const ObjectTraversal = (obj, ak) => {
+    Object.entries(obj).forEach(([key, value]) => {
+      if (Array.isArray(value)) {
+        obj[key] = value[0];
+      }
+    });
+    obj.applicantKind = ak;
   };
   return (
     <div className={styles.handleContainer}>
@@ -127,12 +187,14 @@ export default function index() {
         <div className={styles.headerwrapper}>
           <span>申请人信息</span>
         </div>
-        <Form  form={applicantInfoForm}>
+
+        <Form form={applicantInfoForm} onValuesChange={formValuesChange}>
           <div className={styles.formWrapper}>
             {applicantInfoFormList
-              ?.filter((el) => !el.hidden).map((el, index) => {
-              return findDom(el, index);
-            })}
+              ?.filter((el) => !el.hidden)
+              .map((el, index) => {
+                return findDom(el, index);
+              })}
           </div>
         </Form>
 
@@ -141,6 +203,7 @@ export default function index() {
         </div>
         <Form
           form={respondentInfoForm}
+          onValuesChange={formRespondentValuesChange}
           footer={
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <Button
@@ -166,14 +229,17 @@ export default function index() {
           }
         >
           <div className={styles.formWrapper}>
-            {respondentInfoFormList?.filter((el) => !el.hidden).map((el, index) => {
-              return findDom(el, index);
-            })}
+            {respondentInfoFormList
+              ?.filter((el) => !el.hidden)
+              .map((el, index) => {
+                return findDom(el, index);
+              })}
           </div>
         </Form>
       </div>
       <div style={{ display: stepCurrent === 1 ? 'block' : 'none' }}>
         <Form
+          form={mediationRecordsInfoForm}
           footer={
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <Button
@@ -209,9 +275,11 @@ export default function index() {
             <span>调解情况</span>
           </div>
           <div className={styles.formWrapper}>
-            {formDataList.mediationRecords?.map((el, index) => {
-              return findDom(el, index);
-            })}
+            {mediationRecordsFormList
+              .filter((el) => !el.hidden)
+              .map((el, index) => {
+                return findDom(el, index);
+              })}
           </div>
         </Form>
       </div>

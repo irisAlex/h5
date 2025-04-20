@@ -430,14 +430,15 @@ const mediationRecords = [
     type: 'select',
     columns: [
       {
-        name: '调解成功',
-        id: '1',
+        label: '调解成功',
+        value: true,
       },
       {
-        name: '调解失败',
-        id: '0',
+        label: '调解失败',
+        value: false,
       },
     ],
+    hidden: false,
   },
   {
     name: 'startTime',
